@@ -23,8 +23,8 @@ class CreatePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'=> ['required', 'min:8'],
-            'slug' => ['required', 'min:8'],
+            'title'=> ['required', 'min:3'],
+            'slug' => ['required', 'min:5', 'unique:posts'],
             'content' => ['required']
         ];
     }

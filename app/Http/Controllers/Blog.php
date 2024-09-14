@@ -11,7 +11,8 @@ use App\Http\Requests\CreatePostRequest;
 class Blog extends Controller
 {
     public function index (): View {
-      return view("notes.index", ["posts" =>  Post::paginate(5)]);
+      $posts = Post::orderBy('created_at', 'desc')->paginate(10);
+      return view("notes.index", ["posts" =>  $posts]);
     }
 
     public function show($slug)
@@ -28,4 +29,18 @@ class Blog extends Controller
       return redirect()->route('notes.show',['slug' => $post->slug])->with('success', "Note created successfully 🎉");
 
     }
+
+    public function edit($slug) {
+      // show edit form
+      $post = Post::where('slug', $slug)->firstOrFail();
+      return view('notes.edit', ['post' => $post]);
+    }
+
+    public function update($slug, Post $post,CreatePostRequest $request) {
+       $post = Post::where('slug', $slug)->firstOrFail();
+
+       $post->update($request->validated());
+       return redirect()->route('notes.show', ['slug'=>$post->slug])->with('success', "The note was updated successfully");
+    }
+
 }
